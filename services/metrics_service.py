@@ -1,30 +1,44 @@
-import time
-from collections import deque
+from collectors.cpu import get_cpu_usage
+from collectors.memory import get_memory_usage
+from collectors.disk import get_disk_usage
+from collectors.network import get_network_usage
+from collectors.docker import get_docker_containers
+from collectors.process import get_top_processes
 
-from collectors.cpu import get_cpu
-from collectors.memory import get_memory
-from collectors.disk import get_disk
-from collectors.network import get_network
-from collectors.docker import get_containers
+from services.alert_service import generate_alerts
+from database import insert_metrics
 
-# store last 20 values
-cpu_history = deque(maxlen=20)
-memory_history = deque(maxlen=20)
 
-def get_metrics():
-    cpu = get_cpu()
-    memory = get_memory()
+def collect_all_metrics():
+    try:
+        data = {
+            "cpu": get_cpu_usage(),
+            "memory": get_memory_usage(),
+            "disk": get_disk_usage(),
+            "network": get_network_usage(),
+            "docker": get_docker_containers(),
+            "processes": get_top_processes()
+        }
 
-    cpu_history.append(cpu)
-    memory_history.append(memory)
+        # Alerts
+        data["alerts"] = generate_alerts(data)
 
-    return {
-        "timestamp": time.time(),
-        "cpu": cpu,
-        "memory": memory,
-        "disk": get_disk(),
-        "network": get_network(),
-        "containers": get_containers(),
-        "cpu_history": list(cpu_history),
-        "memory_history": list(memory_history)
-    }
+        # Store in DB (safe)
+        try:
+            insert_metrics(data)
+        except Exception as e:
+            print("DB Error:", e)
+
+        return data
+
+    except Exception as e:
+        print("Metrics Error:", e)
+        return {
+            "cpu": 0,
+            "memory": 0,
+            "disk": 0,
+            "network": 0,
+            "docker": [],
+            "processes": [],
+            "alerts": []
+        }
