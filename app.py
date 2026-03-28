@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, jsonify
 from services.metrics_service import collect_all_metrics
 from database import init_db
