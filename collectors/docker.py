@@ -1,14 +1,13 @@
-import docker
+import subprocess
 
-client = docker.from_env()
-
-def get_containers():
-    containers = []
-    
-    for c in client.containers.list():
-        containers.append({
-            "name": c.name,
-            "status": c.status
-        })
-    
-    return containers
+def get_docker_containers():
+    try:
+        result = subprocess.run(
+            ["docker", "ps", "--format", "{{.Names}}"],
+            capture_output=True,
+            text=True
+        )
+        containers = result.stdout.strip().split("\n")
+        return [c for c in containers if c]
+    except Exception:
+        return []
