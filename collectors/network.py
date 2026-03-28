@@ -1,8 +1,5 @@
 import psutil
 
-def get_network():
+def get_network_usage():
     net = psutil.net_io_counters()
-    return {
-        "sent": net.bytes_sent,
-        "recv": net.bytes_recv
-    }
+    return net.bytes_sent + net.bytes_recv
