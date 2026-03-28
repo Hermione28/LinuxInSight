@@ -2,267 +2,168 @@
 <html>
   <head>
     <title>LinuxInsight</title>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
       body {
         margin: 0;
-        font-family: Arial;
-        background: #0f172a;
-        color: white;
-        display: flex;
+        font-family: "Segoe UI", sans-serif;
+        background: #0b0f19;
+        color: #e5e7eb;
       }
 
-      .sidebar {
-        width: 200px;
-        background: #020617;
+      /* ✅ FIXED TITLE */
+      .title {
+        text-align: center;
         padding: 20px;
-        height: 100vh;
+        font-size: 28px;
+        font-weight: 600;
+        color: #60a5fa;
+        letter-spacing: 1px;
       }
 
-      .sidebar h2 {
-        color: #3b82f6;
+      .title span {
+        font-size: 16px;
+        color: #9ca3af;
+        font-weight: 400;
+        margin-left: 8px;
       }
 
-      .sidebar a {
-        display: block;
-        color: white;
-        margin: 10px 0;
-        text-decoration: none;
+      .container {
+        width: 90%;
+        margin: auto;
       }
 
-      .main {
-        flex: 1;
-        padding: 20px;
-      }
-
-      .grid {
+      .cards {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        gap: 15px;
+        margin-bottom: 25px;
       }
 
       .card {
-        background: #1e293b;
+        background: #111827;
         padding: 20px;
         border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
       }
 
-      .value {
-        font-size: 28px;
+      .card h3 {
+        margin: 0;
+        font-size: 14px;
+        color: #9ca3af;
       }
 
-      table {
-        width: 100%;
-        margin-top: 20px;
+      .card p {
+        font-size: 22px;
+        margin-top: 10px;
       }
 
-      .graph-container {
+      .charts {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
-        margin-top: 30px;
       }
 
-      .graph-card {
-        background: #1e293b;
-        padding: 20px;
-        border-radius: 12px;
-        transition: 0.2s;
+      .panel {
+        background: #111827;
+        padding: 15px;
+        border-radius: 10px;
+        height: 260px;
       }
 
-      .graph-card:hover {
-        transform: scale(1.02);
+      .panel h4 {
+        margin-bottom: 10px;
+        color: #9ca3af;
       }
 
       canvas {
         width: 100% !important;
-        height: 250px !important;
+        height: 200px !important;
       }
 
-      #alertBox {
-        display: none;
-        background: #ef4444;
+      table {
+        width: 100%;
+        margin-top: 30px;
+        border-collapse: collapse;
+        background: #111827;
+      }
+
+      th,
+      td {
         padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      th {
+        background: #1f2937;
       }
     </style>
   </head>
 
   <body>
-    <div class="sidebar">
-      <h2>LinuxInsight</h2>
-      <a href="#">Dashboard</a>
-      <a href="/logout">Logout</a>
-    </div>
+    <!-- ✅ ONLY ONE HEADING -->
+    <h1 class="title">LinuxInsight <span> System Dashboard</span></h1>
 
-    <div class="main">
-      <h1>System Metrics</h1>
-
-      <div id="alertBox">⚠️ High CPU Usage!</div>
-
-      <div class="grid">
+    <div class="container">
+      <!-- CARDS -->
+      <div class="cards">
         <div class="card">
-          CPU:
-          <div id="cpu" class="value"></div>
+          <h3>CPU</h3>
+          <p id="cpu">0%</p>
         </div>
         <div class="card">
-          Memory:
-          <div id="memory" class="value"></div>
+          <h3>Memory</h3>
+          <p id="memory">0%</p>
         </div>
         <div class="card">
-          Disk:
-          <div id="disk" class="value"></div>
+          <h3>Disk</h3>
+          <p id="disk">0%</p>
         </div>
         <div class="card">
-          Network:
-          <div id="network" class="value"></div>
+          <h3>Network</h3>
+          <p id="network">0</p>
         </div>
       </div>
 
-      <h2>📈 System Graphs</h2>
-
-      <div class="graph-container">
-        <div class="graph-card">
-          <h3>CPU Usage</h3>
+      <!-- GRAPHS -->
+      <div class="charts">
+        <div class="panel">
+          <h4>CPU Usage</h4>
           <canvas id="cpuChart"></canvas>
         </div>
-
-        <div class="graph-card">
-          <h3>Memory Usage</h3>
+        <div class="panel">
+          <h4>Memory Usage</h4>
           <canvas id="memoryChart"></canvas>
+        </div>
+        <div class="panel">
+          <h4>Disk Usage</h4>
+          <canvas id="diskChart"></canvas>
+        </div>
+        <div class="panel">
+          <h4>Network Usage</h4>
+          <canvas id="networkChart"></canvas>
         </div>
       </div>
 
-      <h2>Docker Containers</h2>
+      <!-- TABLE -->
+      <h3 style="margin-top: 30px">Top Processes</h3>
+
       <table>
-        <tbody id="containers"></tbody>
+        <thead>
+          <tr>
+            <th>PID</th>
+            <th>Name</th>
+            <th>CPU %</th>
+            <th>Memory %</th>
+          </tr>
+        </thead>
+        <tbody id="processTable"></tbody>
       </table>
     </div>
 
-    <script>
-      let cpuChart, memoryChart;
-
-      // ✅ Ask notification permission
-      if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-
-      // ✅ Create charts
-      function createCharts() {
-        const cpuCtx = document.getElementById("cpuChart").getContext("2d");
-        const memCtx = document.getElementById("memoryChart").getContext("2d");
-
-        cpuChart = new Chart(cpuCtx, {
-          type: "line",
-          data: {
-            labels: [],
-            datasets: [
-              {
-                data: [],
-                borderColor: "#22c55e",
-                backgroundColor: "rgba(34,197,94,0.2)",
-                tension: 0.4,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { display: false },
-              y: { ticks: { color: "white" } },
-            },
-          },
-        });
-
-        memoryChart = new Chart(memCtx, {
-          type: "line",
-          data: {
-            labels: [],
-            datasets: [
-              {
-                data: [],
-                borderColor: "#3b82f6",
-                backgroundColor: "rgba(59,130,246,0.2)",
-                tension: 0.4,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { display: false },
-              y: { ticks: { color: "white" } },
-            },
-          },
-        });
-      }
-
-      // ✅ Fetch data
-      async function fetchData() {
-        const res = await fetch("/metrics");
-        const data = await res.json();
-
-        // cards
-        document.getElementById("cpu").innerText = data.cpu + "%";
-        document.getElementById("memory").innerText = data.memory + "%";
-        document.getElementById("disk").innerText = data.disk + "%";
-
-        document.getElementById("network").innerText =
-          data.network.sent + "/" + data.network.recv;
-
-        // alert
-        if (data.cpu > 80) {
-          document.getElementById("alertBox").style.display = "block";
-        } else {
-          document.getElementById("alertBox").style.display = "none";
-        }
-
-        // notification
-        if (data.cpu > 90 && Notification.permission === "granted") {
-          new Notification("⚠️ High CPU Usage", {
-            body: "CPU usage is above 90%",
-          });
-        }
-
-        // charts update
-        cpuChart.data.labels.push("");
-        cpuChart.data.datasets[0].data.push(data.cpu);
-
-        if (cpuChart.data.labels.length > 20) {
-          cpuChart.data.labels.shift();
-          cpuChart.data.datasets[0].data.shift();
-        }
-
-        cpuChart.update();
-
-        memoryChart.data.labels.push("");
-        memoryChart.data.datasets[0].data.push(data.memory);
-
-        if (memoryChart.data.labels.length > 20) {
-          memoryChart.data.labels.shift();
-          memoryChart.data.datasets[0].data.shift();
-        }
-
-        memoryChart.update();
-
-        // containers
-        let rows = "";
-        data.containers.forEach((c) => {
-          rows += `<tr><td>${c.name}</td><td>${c.status}</td></tr>`;
-        });
-
-        document.getElementById("containers").innerHTML = rows;
-      }
-
-      // INIT
-      createCharts();
-      setInterval(fetchData, 2000);
-      fetchData();
-    </script>
+    <script src="/static/js/index-script.js"></script>
   </body>
 </html>
+
