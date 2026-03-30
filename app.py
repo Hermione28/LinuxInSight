@@ -3,7 +3,9 @@ import logging
 from flask import Flask, jsonify, render_template
 from database import init_db, insert_metrics, get_last_metrics
 from services.metrics_service import get_all_metrics
-
+from services.health_service import calculate_health
+from services.analysis_service import analyze_trend, detect_anomaly
+from database import get_last_n_metrics
 app = Flask(__name__)
 
 # 🔥 Logging setup
