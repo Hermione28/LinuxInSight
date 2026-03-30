@@ -40,24 +40,33 @@ def index():
 # 🔥 API: real-time metrics + store in DB
 @app.route("/metrics")
 def metrics():
-    try:
-        data = get_all_metrics()
+    data = collect_all_metrics()
 
-        # ✅ FIXED INDENTATION
-        insert_metrics(
-            data.get("cpu", 0),
-            data.get("memory", 0),
-            data.get("disk", 0),
-            data.get("network", 0)
-        )
+    # ✅ Health score
+    health_score = calculate_health(data)
 
-        logger.info("Metrics fetched and stored successfully")
+    # ✅ Get history
+    history = get_last_n_metrics(5)
 
-        return jsonify(data)
+    cpu_history = [row[0] for row in history]
+    memory_history = [row[1] for row in history]
 
-    except Exception as e:
-        logger.error(f"Error in /metrics: {str(e)}")
-        return jsonify({"error": "Failed to fetch metrics"}), 500
+    # ✅ Trend
+    cpu_trend = analyze_trend(cpu_history)
+    memory_trend = analyze_trend(memory_history)
+
+    # ✅ Anomaly
+    cpu_anomaly = detect_anomaly(data["cpu"])
+    memory_anomaly = detect_anomaly(data["memory"])
+
+    return {
+        **data,
+        "health": health_score,
+        "cpu_trend": cpu_trend,
+        "memory_trend": memory_trend,
+        "cpu_anomaly": cpu_anomaly,
+        "memory_anomaly": memory_anomaly
+    }
 
 
 # 🔥 API: history for graphs
