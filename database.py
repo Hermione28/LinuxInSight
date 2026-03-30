@@ -34,7 +34,19 @@ def insert_metrics(cpu, memory, disk, network):
     conn.commit()
     conn.close()
 
+def get_last_n_metrics(n=5):
+    conn = net_connections()
+    cursor = conn.cursor()
 
+    cursor.execute(
+        "SELECT cpu, memory FROM metrics ORDER BY timestamp DESC LIMIT ?",
+        (n,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows[::-1]  # reverse for correct order
 # 🔥 Get history (including network)
 def get_last_metrics(limit=20):
     conn = sqlite3.connect(DB_NAME)
