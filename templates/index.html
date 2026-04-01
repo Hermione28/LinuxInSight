@@ -4,98 +4,177 @@
     <title>LinuxInsight</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-      body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: #0b0f19;
-        color: #e5e7eb;
-      }
-      /* ✅ FIXED TITLE */
-      .title {
-        text-align: center;
-        padding: 20px;
-        font-size: 28px;
-        font-weight: 600;
-        color: #60a5fa;
-        letter-spacing: 1px;
-      }
-      .title span {
-        font-size: 16px;
-        color: #9ca3af;
-        font-weight: 400;
-        margin-left: 8px;
-      }
-      .container {
-        width: 90%;
-        margin: auto;
-      }
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 25px;
-      }
-      .card {
-        background: #111827;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-      }
-      .card h3 {
-        margin: 0;
-        font-size: 14px;
-        color: #9ca3af;
-      }
-      .card p {
-        font-size: 22px;
-        margin-top: 10px;
-      }
-      .charts {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-      }
-      .panel {
-        background: #111827;
-        padding: 15px;
-        border-radius: 10px;
-        height: 260px;
-      }
-      .panel h4 {
-        margin-bottom: 10px;
-        color: #9ca3af;
-      }
-      canvas {
-        width: 100% !important;
-        height: 200px !important;
-      }
-      table {
-        width: 100%;
-        margin-top: 30px;
-        border-collapse: collapse;
-        background: #111827;
-      }
-      th,
-      td {
-        padding: 10px;
-        text-align: center;
-      }
-      th {
-        background: #1f2937;
-      }
-    </style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #0b0f19;
+  color: #e5e7eb;
+}
+
+/* 🔥 TITLE */
+.title {
+  text-align: center;
+  padding: 30px;
+  font-size: 44px;
+  font-weight: 900;
+  color: #60a5fa;
+  letter-spacing: 2px;
+}
+
+.title span {
+  font-size: 18px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* CONTAINER */
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+/* 🔥 TOP GRID (Docker / Health / Trend / Anomaly) */
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+  .top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔥 PANELS */
+.panel {
+  background: #111827;
+  padding: 20px;
+  border-radius: 14px;
+  min-height: 120px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+/* PANEL TITLES */
+.panel h3 {
+  margin-bottom: 10px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* CARD TEXT */
+.card h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* CHARTS */
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 200px !important;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  background: #111827;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: center;
+}
+
+th {
+  background: #1f2937;
+  color: #9ca3af;
+}
+
+tr:hover {
+  background: #1f2937;
+}
+
   </head>
   <body>
     <!-- ✅ ONLY ONE HEADING -->
     <h1 class="title">LinuxInsight <span> System Dashboard</span></h1>
-    <h2>Docker Containers</h2>
-    <div id="docker"></div>
-    <h2>System Health: <span id="health"></span></h2>
-    <p>CPU Trend: <span id="cpu_trend"></span></p>
-    <p>Memory Trend: <span id="memory_trend"></span></p>
-    <p>CPU Anomaly: <span id="cpu_anomaly"></span></p>
-    <p>Memory Anomaly: <span id="memory_anomaly"></span></p>
+
+    <div class="top-grid">
+      <!-- Docker -->
+      <div class="panel">
+        <h3>🐳 Docker Containers</h3>
+        <div id="docker"></div>
+      </div>
+
+      <!-- Health -->
+      <div class="panel">
+        <h3>💚 System Health</h3>
+        <h2 id="health"></h2>
+      </div>
+
+      <!-- Trends -->
+      <div class="panel">
+        <h3>📊 Trends</h3>
+        <p>CPU: <span id="cpu_trend"></span></p>
+        <p>Memory: <span id="memory_trend"></span></p>
+      </div>
+
+      <!-- Anomaly -->
+      <div class="panel">
+        <h3>🚨 Anomaly Detection</h3>
+        <p>CPU: <span id="cpu_anomaly"></span></p>
+        <p>Memory: <span id="memory_anomaly"></span></p>
+      </div>
+    </div>
     <div class="container">
       <!-- CARDS -->
       <div class="cards">
