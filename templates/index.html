@@ -3,7 +3,6 @@
   <head>
     <title>LinuxInsight</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
       body {
         margin: 0;
@@ -11,7 +10,6 @@
         background: #0b0f19;
         color: #e5e7eb;
       }
-
       /* ✅ FIXED TITLE */
       .title {
         text-align: center;
@@ -21,26 +19,22 @@
         color: #60a5fa;
         letter-spacing: 1px;
       }
-
       .title span {
         font-size: 16px;
         color: #9ca3af;
         font-weight: 400;
         margin-left: 8px;
       }
-
       .container {
         width: 90%;
         margin: auto;
       }
-
       .cards {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 15px;
         margin-bottom: 25px;
       }
-
       .card {
         background: #111827;
         padding: 20px;
@@ -48,71 +42,60 @@
         text-align: center;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
       }
-
       .card h3 {
         margin: 0;
         font-size: 14px;
         color: #9ca3af;
       }
-
       .card p {
         font-size: 22px;
         margin-top: 10px;
       }
-
       .charts {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
       }
-
       .panel {
         background: #111827;
         padding: 15px;
         border-radius: 10px;
         height: 260px;
       }
-
       .panel h4 {
         margin-bottom: 10px;
         color: #9ca3af;
       }
-
       canvas {
         width: 100% !important;
         height: 200px !important;
       }
-
       table {
         width: 100%;
         margin-top: 30px;
         border-collapse: collapse;
         background: #111827;
       }
-
       th,
       td {
         padding: 10px;
         text-align: center;
       }
-
       th {
         background: #1f2937;
       }
     </style>
   </head>
-
   <body>
     <!-- ✅ ONLY ONE HEADING -->
     <h1 class="title">LinuxInsight <span> System Dashboard</span></h1>
     <h2>Docker Containers</h2>
     <div id="docker"></div>
- 
-     <h2>System Health: <span id="health"></span></h2>
-     <p>CPU Trend: <span id="cpu_trend"></span></p>
-     <p>Memory Trend: <span id="memory_trend"></span></p>
-     <p>CPU Anomaly: <span id="cpu_anomaly"></span></p>
-     <p>Memory Anomaly: <span id="memory_anomaly"></span></p>
+    <h2>System Health: <span id="health"></span></h2>
+    <p>CPU Trend: <span id="cpu_trend"></span></p>
+    <p>Memory Trend: <span id="memory_trend"></span></p>
+    <p>CPU Anomaly: <span id="cpu_anomaly"></span></p>
+    <p>Memory Anomaly: <span id="memory_anomaly"></span></p>
     <div class="container">
       <!-- CARDS -->
       <div class="cards">
@@ -133,7 +116,6 @@
           <p id="network">0</p>
         </div>
       </div>
-
       <!-- GRAPHS -->
       <div class="charts">
         <div class="panel">
@@ -153,10 +135,8 @@
           <canvas id="networkChart"></canvas>
         </div>
       </div>
-
       <!-- TABLE -->
       <h3 style="margin-top: 30px">Top Processes</h3>
-
       <table>
         <thead>
           <tr>
@@ -169,7 +149,6 @@
         <tbody id="processTable"></tbody>
       </table>
     </div>
-
     <script src="/static/js/index-script.js"></script>
   </body>
 </html>
