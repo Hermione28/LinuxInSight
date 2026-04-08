@@ -177,3 +177,4 @@ window.onload = function () {
   setInterval(fetchMetrics, 3000);
   setInterval(loadHistory, 10000);
 };
+
