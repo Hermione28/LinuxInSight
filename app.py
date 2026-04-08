@@ -25,10 +25,22 @@ def index():
 
 
 @app.route("/metrics")
+
 def metrics():
     try:
         data = get_all_metrics()
 
+# ✅ ADD THIS
+        insert_metrics(
+            data["cpu"],
+            data["memory"],
+            data["disk"],
+            data["network"]
+        ) 
+        print("INSERTED:", data)  
+        
+
+    
         history = get_last_n_metrics(10) or []
 
         cpu_history = [row[0] for row in history] if history else []
