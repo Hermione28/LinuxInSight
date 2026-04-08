@@ -1,5 +1,7 @@
 import sqlite3
 
+from psutil import net_connections
+
 DB_NAME = "metrics.db"
 
 def init_db():
@@ -35,7 +37,7 @@ def insert_metrics(cpu, memory, disk, network):
     conn.close()
 
 def get_last_n_metrics(n=5):
-    conn = net_connections()
+    conn = sqlite3.connect(DB_NAME)   
     cursor = conn.cursor()
 
     cursor.execute(
