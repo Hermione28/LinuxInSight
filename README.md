@@ -122,20 +122,6 @@ The system is divided into multiple layers:
 
 ---
 
-### Examples
-
-<p align="center">
-  <img src="Assets/DashBoard1.png" width="800"/>
-</p>
-
-<br><br>
-
-<p align="center">
-  <img src="Assets/DashBoard2.png" width="800"/>
-</p>
-
----
-
 ### Future Improvements
 
 * Add alert notifications (Email/Slack)
