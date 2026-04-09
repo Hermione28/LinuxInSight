@@ -7,6 +7,7 @@ This project is a real-time system monitoring dashboard built using **Flask (Pyt
 ## Preview
 
 ![Dashboard Screenshot 1](Assets/DashBoard1.png)
+<br><br><br><br>
 ![Dashboard Screenshot 2](Assets/DashBoard2.png)
 
 ---
@@ -115,8 +116,8 @@ The system is divided into multiple layers:
 
 ### Examples
 
-![Example Dashboard 1](ASSETS/Dashboard1.png)
-![Example Dashboard 2](ASSETS/Dashboard2.png)
+![Example Dashboard 1](Assets/DashBoard1.png)
+![Example Dashboard 2](Assets/DashBoard2.png)
 
 ---
 
